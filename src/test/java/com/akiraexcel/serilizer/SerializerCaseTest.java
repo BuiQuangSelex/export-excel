@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.akiraexcel.model.Cat;
+import com.github.boyundefeated.akiraexcel.model.SheetDataModel;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.junit.AfterClass;
 import org.junit.FixMethodOrder;
@@ -40,6 +42,27 @@ public class SerializerCaseTest {
 		List<Employee> employees = Data.fakeEmployes();
 		FileOutputStream fileOut = new FileOutputStream(FILENAME);
 		Workbook wb = AkiraExcel.toExcel(employees, new AkiraWriterFormatOptions.Builder().build());
+		// write this workbook to an Outputstream.
+		wb.write(fileOut);
+		fileOut.flush();
+		fileOut.close();
+
+		assertNotNull(wb);
+	}
+
+	@Test
+	public void shouldMapJavaToExcelMultipleSheet() throws IOException {
+		List<Employee> employees = Data.fakeEmployes();
+		List<Cat> cats = Data.fakeCats();
+		FileOutputStream fileOut = new FileOutputStream(FILENAME);
+
+		SheetDataModel sheetDataModel = new SheetDataModel("employee", employees, Employee.class, new AkiraWriterFormatOptions.Builder().build());
+		SheetDataModel sheetDataModelCat = new SheetDataModel("Cat", cats, Cat.class, new AkiraWriterFormatOptions.Builder().build());
+		List<SheetDataModel> sheetDataModels = new ArrayList<>();
+		sheetDataModels.add(sheetDataModel);
+		sheetDataModels.add(sheetDataModelCat);
+
+		Workbook wb = AkiraExcel.toExcelMultipleSheet(sheetDataModels);
 		// write this workbook to an Outputstream.
 		wb.write(fileOut);
 		fileOut.flush();

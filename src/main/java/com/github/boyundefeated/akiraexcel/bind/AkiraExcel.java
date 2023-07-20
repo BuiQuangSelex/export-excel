@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
+import com.github.boyundefeated.akiraexcel.model.SheetDataModel;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -113,6 +114,32 @@ public final class AkiraExcel {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		return wb;
+	}
+
+	public static synchronized <T> Workbook toExcel(XSSFWorkbook wb, String sheetName, List<T> data, Class<?> type, AkiraWriterFormatOptions options) {
+		XSSFSheet sheet = wb.createSheet(sheetName);
+		options.validate(wb); // important
+		try {
+			AkiraSheetWriter<T> sheetWriter = new AkiraSheetWriter(sheet, data, type, options);
+			sheetWriter.write();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+		return wb;
+	}
+
+	/**
+	 * @author quangbs
+	 * @param sheetDataModels object data to be exported
+	 * @return A excel workbook
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static synchronized Workbook toExcelMultipleSheet(List<SheetDataModel> sheetDataModels) {
+		XSSFWorkbook wb = new XSSFWorkbook();
+		sheetDataModels.forEach(sheetDataModel -> {
+			toExcel(wb,sheetDataModel.getSheetName(), sheetDataModel.getData(), sheetDataModel.getClazz(), sheetDataModel.getOptions());
+		});
 		return wb;
 	}
 

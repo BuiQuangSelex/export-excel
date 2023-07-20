@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.akiraexcel.model.Cat;
 import com.akiraexcel.model.Employee;
 
 public final class Data {
@@ -46,5 +47,19 @@ public final class Data {
 		employees.add(employee3);
 
 		return employees;
+	}
+
+	public static List<Cat> fakeCats() {
+		List<Cat> cats = new ArrayList<>();
+
+		Cat cat = new Cat("Tom", 12);
+		Cat cat1 = new Cat("Tyti", 3);
+		Cat cat2 = new Cat("Tao", 5);
+
+		cats.add(cat1);
+		cats.add(cat2);
+		cats.add(cat);
+
+		return cats;
 	}
 }
